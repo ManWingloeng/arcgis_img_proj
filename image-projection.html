@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>
+        Intro to MapImageLayer | Sample | ArcGIS API for JavaScript 4.17
+    </title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.17/"></script>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <script>
+        require([
+            "esri/WebMap",
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/views/SceneView",
+            "esri/layers/MapImageLayer"
+        ], function(WebMap, Map, MapView, SceneView, MapImageLayer) {
+            /*****************************************************************
+             * Create a MapImageLayer instance pointing to a Map Service
+             * containing data about pool permits in Southern California.
+             *****************************************************************/
+            var permitsLayer = new MapImageLayer({
+                portalItem: {
+                    // autocasts as new PortalItem()
+                    id: "3113eacc129942b4abde490a51aeb33f"
+                }
+            });
+
+            /*****************************************************************
+             * Add the layer to a map
+             *****************************************************************/
+            // var map = new Map({
+            //     basemap: "dark-gray-vector",
+            //     layers: [permitsLayer]
+            // });
+            const map = new WebMap({
+                // contains a basemap with a South Pole Stereographic projection
+                // the CSVLayer coordinates will re-project client-side
+                // with the Projection Engine to match the view's Spatial Reference
+                basemap: {
+                    portalItem: {
+                        id: "3113eacc129942b4abde490a51aeb33f"
+                    }
+                },
+                // layers: [csvLayer]
+            });
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                highlightOptions: {
+                    color: "#ff642e",
+                    haloOpacity: 1,
+                    fillOpacity: 0.25
+                },
+                popup: {
+                    dockEnabled: true,
+                    dockOptions: {
+                        breakpoint: false
+                    }
+                }
+            });
+
+            /*****************************************************************
+             * Animate to the layer's full extent when the layer loads.
+             *****************************************************************/
+            permitsLayer.when(function() {
+                view.goTo(permitsLayer.fullExtent).catch(function(error) {
+                    if (error.name != "AbortError") {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="viewDiv"></div>
+</body>
+
+</html>
