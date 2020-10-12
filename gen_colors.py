@@ -5,13 +5,13 @@ import numpy as np
 save_path = 'colors_png/'
 colors = [i for i in range(255)]
 c_list = []
-width = 30
+width = 4
 for c in colors:
-    c_png = str(c) + ".png"
+    c_png = str(c) + "_4x4.png"
     c_list.append(c_png)
-    img = np.zeros((width, width), np.uint8)
+    img = np.zeros((width, width), np.uint8)*c
     c_path = os.path.join(save_path, c_png)
-    cv2.circle(img, (width // 2, width // 2), width // 2, c, -1)
+    # cv2.circle(img, (width // 2, width // 2), width // 2, c, -1)
     img_bgr = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
     # print(img_bgr.shape)
     cv2.imwrite(c_path, img_bgr)
